@@ -49,3 +49,15 @@ with Duplicating as(
 select *, ROW_NUMBER() over(partition by id order by id) as Numbering from Duplication
 )
 delete Duplicating where Numbering>1;
+
+--find employees hired in last n years
+Create table Employees
+( ID int primary key identity,
+     [Name] varchar(max),
+     Gender varchar(10),
+     Salary int,
+     HireDate Date);
+insert into employees ([Name], Gender,Salary, HireDate)
+select [Name], Gender,Salary, HiredDate from WholeData;
+--update Employees set HireDate = DATEADD(year,round(rand()*2,0),HireDate);
+select * from Employees where datediff(year,hiredate ,getdate())<=2;
