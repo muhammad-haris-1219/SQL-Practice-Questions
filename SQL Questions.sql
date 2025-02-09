@@ -61,3 +61,11 @@ insert into employees ([Name], Gender,Salary, HireDate)
 select [Name], Gender,Salary, HiredDate from WholeData;
 --update Employees set HireDate = DATEADD(year,round(rand()*2,0),HireDate);
 select * from Employees where datediff(year,hiredate ,getdate())<=2;
+
+--how transform rows into columns in sql server
+select City, [Sindh], [Punjab],[KPK],[Balochistan] from
+(select Province, City, COUNT(City) as Citing from WholeData group by Province, City ) as Merged
+pivot(
+max(citing)
+for Province in ([Sindh], [Punjab],[KPK],[Balochistan])
+) as Transformed;
