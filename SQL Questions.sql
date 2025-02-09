@@ -48,4 +48,4 @@ truncate table duplicate;
 with Duplicating as(
 select *, ROW_NUMBER() over(partition by id order by id) as Numbering from Duplication
 )
-select * from Duplicating where Numbering<2;
+delete Duplicating where Numbering>1;
