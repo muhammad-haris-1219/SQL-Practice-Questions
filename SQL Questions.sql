@@ -69,3 +69,19 @@ pivot(
 max(citing)
 for Province in ([Sindh], [Punjab],[KPK],[Balochistan])
 ) as Transformed;
+
+-- select all names that start with a given letter without like operator
+Create table findLetters(  
+	 ID int,
+     [Name] varchar(50),
+     Gender varchar(50),
+     Salary int); 
+insert into findLetters( ID,name,gender, Salary) select ID, [Name] ,Gender, Salary from WholeData;
+
+select * from findLetters where [Name] like 'M%';
+--or
+select * from findLetters where SUBSTRING(name,1,1) = 'M';
+--or
+select * from findLetters where left(name,1) = 'M';
+--or
+select * from findLetters where CHARINDEX('M', name)=1;
