@@ -85,3 +85,28 @@ select * from findLetters where SUBSTRING(name,1,1) = 'M';
 select * from findLetters where left(name,1) = 'M';
 --or
 select * from findLetters where CHARINDEX('M', name)=1;
+
+--find department with highest number of employees
+Create Table Departments(
+     DepartmentID int not null,
+     DepartmentName varchar(50)
+);
+insert into Departments (DepartmentID, DepartmentName) select Dept_ID, Department from WholeData;
+with duplication as(
+select*, ROW_NUMBER() over(partition by DepartmentID order by DepartmentID) as duplicating from Departments
+) delete from duplication where duplicating>1;
+alter table departments add constraint PK_DepartmentID primary key(DepartmentID ) ;
+
+Create Table Employee(
+     EmployeeID int not null,
+     EmployeeName nvarchar(50)
+);
+alter table Employee add departmentID int, 
+foreign key (DepartmentID) references Departments(DepartmentID);
+insert into Employee (EmployeeID,EmployeeName,DepartmentID) select ID,[Name],dept_ID from WholeData;
+with duplication as(
+select*, ROW_NUMBER() over(partition by employeeid order by employeeid  ) as duplicating from Employee
+) delete from duplication where duplicating>1;
+
+select top 1 DepartmentName, COUNT(*) as TotalEmployee from Employee join Departments on
+Employee.DepartmentID=Departments.DepartmentID group by DepartmentName order by COUNT(*) desc;
