@@ -107,6 +107,23 @@ insert into Employee (EmployeeID,EmployeeName,DepartmentID) select ID,[Name],dep
 with duplication as(
 select*, ROW_NUMBER() over(partition by employeeid order by employeeid  ) as duplicating from Employee
 ) delete from duplication where duplicating>1;
-
 select top 1 DepartmentName, COUNT(*) as TotalEmployee from Employee join Departments on
 Employee.DepartmentID=Departments.DepartmentID group by DepartmentName order by COUNT(*) desc;
+
+--Date questions 
+create table employeeDOB(
+[Name] varchar(50),
+[Date of Birth] date
+);
+insert into employeeDOB ([Name],[Date of Birth]) select [Name], DOB from WholeData;
+drop table employeeDOB; 
+--Write a SQL query to retrieve all people who are born on a given date (For example, 7th Nov 2001)
+select * from employeeDOB where cast([Date of Birth] as date)='2001-07-11';
+--Write a SQL query to retrieve all people who are born between 2 given dates 
+select * from employeeDOB where cast([Date of Birth] as date) between '1995-12-08' and '2001-07-11';
+--Write a SQL query to retrieve all people who are born on the same day and month excluding the year 
+select * from employeeDOB where day([Date of Birth])=12 and MONTH([Date of Birth])=2;
+--Write a SQL query to get all people who are born in a given year (Example, all people born in the year 2017)
+select * from employeeDOB  where year([Date of Birth])=2000;
+--Write a SQL query to retrieve all people who are born yesterday
+select * from employeeDOB  where year([date of birth]) =year(dateadd(year,-1,'2005') );
