@@ -123,7 +123,29 @@ select * from employeeDOB where cast([Date of Birth] as date)='2001-07-11';
 select * from employeeDOB where cast([Date of Birth] as date) between '1995-12-08' and '2001-07-11';
 --Write a SQL query to retrieve all people who are born on the same day and month excluding the year 
 select * from employeeDOB where day([Date of Birth])=12 and MONTH([Date of Birth])=2;
---Write a SQL query to get all people who are born in a given year (Example, all people born in the year 2017)
-select * from employeeDOB  where year([Date of Birth])=2000;
+--Write a SQL query to get all people who are born in a given year (Example, all people born in the year 2002)
+select * from employeeDOB  where year([Date of Birth])=2002;
 --Write a SQL query to retrieve all people who are born yesterday
-select * from employeeDOB  where year([date of birth]) =year(dateadd(year,-1,'2005') );
+select * from employeeDOB  where year([date of birth]) =year(dateadd(year,-1,'2005'));
+
+--Find Yearly & Monthly Sales In Table Format 
+create table monthlySales(
+Products varchar(max),
+[Date] Date,
+Price int,
+Quantity int
+);
+bulk insert monthlySales from 'D:\SQL\Practice\Question-Answers\Data.csv'
+with(
+fieldterminator =',', rowterminator ='\n', firstrow=2
+);
+select Months, ISNULL([2015], 0) AS [2015], ISNULL([2016], 0) AS [2016], ISNULL([2017], 0) AS [2017], 
+ISNULL([2018], 0) AS [2018], ISNULL([2019], 0) AS [2019], ISNULL([2020], 0) AS [2020], 
+ISNULL([2021], 0) AS [2021], ISNULL([2022], 0) AS [2022], ISNULL([2023], 0) AS [2023], 
+ISNULL([2024], 0) AS [2024], ISNULL([2025], 0) AS [2025] from
+(select datename(year,[Date]) as Years, datename(MONTH,[Date]) as Months, sum(Price*Quantity) as Sales 
+from monthlySales group by datename(year,[Date]), datename(MONTH,[Date])) as Total
+pivot(
+max(sales)
+for Years in ([2015], [2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023],[2024],[2025])
+) as Summary;
