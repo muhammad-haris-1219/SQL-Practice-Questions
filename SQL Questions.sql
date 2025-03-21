@@ -11,7 +11,7 @@ Department varchar(max),
 salary decimal(10,2),
 Dept_ID int
 );
-bulk insert WholeData from 'D:\SQL\Practice\Question-Answers\Data.csv'
+bulk insert WholeData from 'D:\SQL\Practice\Question-Answers\WholeData.csv'
 with(
 fieldterminator=',', rowterminator='\n', firstrow=2
 );
@@ -135,7 +135,7 @@ Products varchar(max),
 Price int,
 Quantity int
 );
-bulk insert monthlySales from 'D:\SQL\Practice\Question-Answers\Data.csv'
+bulk insert monthlySales from 'D:\SQL\Practice\Question-Answers\monthlySales.csv'
 with(
 fieldterminator =',', rowterminator ='\n', firstrow=2
 );
