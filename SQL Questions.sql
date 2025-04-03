@@ -1,26 +1,30 @@
 CREATE database Question;
-use Question; 
+use Question;  
 create table WholeData(
 ID int not null,
-[Date] datetime,
+HiredDate datetime,
 [Name] varchar(max),
 Email nvarchar(max),
 Gender varchar(10),
 Age int,
 Department varchar(max),
-salary decimal(10,2),
-Dept_ID int
-);
+Salary decimal(10,2),
+Dept_ID int,
+Province varchar(max),
+City varchar(max),
+DOB date,
+Expertise varchar(max)
+);  
 bulk insert WholeData from 'D:\SQL\Practice\Question-Answers\WholeData.csv'
 with(
 fieldterminator=',', rowterminator='\n', firstrow=2
-);
+); 
 
 --How to find nth highest salary in sql
 create table highSalary( 
 [name] nvarchar(max),
 gender varchar(max),
-salary int
+Salary int
 );
 insert into highSalary ([name], gender, salary)
 select [Name], Gender, Salary from wholeData;
@@ -137,7 +141,7 @@ Quantity int
 );
 bulk insert monthlySales from 'D:\SQL\Practice\Question-Answers\monthlySales.csv'
 with(
-fieldterminator =',', rowterminator ='\n', firstrow=2
+fieldterminator =',', rowterminator ='0x0a', firstrow=2
 );
 select Months, ISNULL([2015], 0) AS [2015], ISNULL([2016], 0) AS [2016], ISNULL([2017], 0) AS [2017], 
 ISNULL([2018], 0) AS [2018], ISNULL([2019], 0) AS [2019], ISNULL([2020], 0) AS [2020], 
@@ -149,3 +153,36 @@ pivot(
 max(sales)
 for Years in ([2015], [2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023],[2024],[2025])
 ) as Summary;
+
+--Write SQL Query To Find Candidates For A Particular Job 
+with Skills as
+(select ID from WholeData where Expertise in ('Excel','Power BI')
+group by ID having COUNT(*)=2)
+select WholeData.ID, Expertise, Gender, Email from Skills join WholeData 
+on WholeData.ID=Skills.ID
+where WholeData.Expertise in ( 'Power BI', 'Excel') ;
+
+--write query alternative top 10 records
+select top 10 * from WholeData where ID % 2=1; -- if ID sorted/arranged a/c to whole Num. series
+--or
+select top 10 * from WholeData where ID % 2<>0;
+
+-- if ID not sorted/arranged or randomized 
+With alternativeRecords as(
+select *, row_number() over(order by id) as Numbering from WholeData
+)
+select * from alternativeRecords where Numbering % 2=1;
+--or
+select * from
+(select *, row_number() over(order by id) as Numbering from WholeData) as Numbered 
+where Numbering % 2=1;
+
+--write query for max & min salaries & also counts a/c to department
+select ID, max(salary) as MaxSalary from WholeData
+group by id order by max(salary) desc;
+select ID, min(Salary) as MinSalary from WholeData
+group by ID order by min(Salary) asc ;
+select Department, COUNT(*) as Employees from WholeData
+group by Department order by COUNT(*) desc;
+
+
