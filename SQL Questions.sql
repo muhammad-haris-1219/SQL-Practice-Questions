@@ -185,4 +185,29 @@ group by ID order by min(Salary) asc ;
 select Department, COUNT(*) as Employees from WholeData
 group by Department order by COUNT(*) desc;
 
+--How inserting one table data into another table without munual creating table
+select * into Tabled from WholeData;
+--how inserting one table structure into another table(without creating)
+select * into Tabled from WholeData where 0 <> 0;
+
+--retrive 1st, last record & also last 3 records
+with Record as(
+select *,ROW_NUMBER() over(order by id) as [Sr.#] from WholeData
+)
+select top 3 * from Record order by id desc;
+--or
+select  top 1 * from WholeData order by ID;
+select  top 1 * from WholeData order by ID desc;
+select  distinct top 3  * from WholeData where ID in
+(select distinct top 3 ID from WholeData order by ID desc
+) ; -- if ID has duplication then (distinct top)
+
+--retrive all records which  are repeated name & email
+select [Name],Email, COUNT(*) as Counts from WholeData 
+group by [Name],Email 
+having COUNT(*)>=2;
+
+--display all records a/c to quarterly
+select DATEPART(quarter, HiredDate ) As Quarters,*  from WholeData
+where year(HiredDate)= 2018 order by Quarters;
 
