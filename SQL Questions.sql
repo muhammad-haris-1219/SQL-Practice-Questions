@@ -211,3 +211,22 @@ having COUNT(*)>=2;
 select DATEPART(quarter, HiredDate ) As Quarters,*  from WholeData
 where year(HiredDate)= 2018 order by Quarters;
 
+--Custom Sorting In SQL also Order By Month In A Year 
+select DATENAME(month,[date]) as [MonthName],
+price from monthlySales order by month([date]) asc;
+--or
+select  DATENAME(month,[date]) as [MonthName], Price
+from monthlySales order by case
+when  DATENAME(month,[date]) = 'January' then 1
+when  DATENAME(month,[date]) = 'February' then 2
+when  DATENAME(month,[date]) = 'March' then 3
+when  DATENAME(month,[date]) = 'April' then 4
+when  DATENAME(month,[date]) = 'May' then 5
+when  DATENAME(month,[date]) = 'June' then 6
+when  DATENAME(month,[date]) = 'July' then 7
+when  DATENAME(month,[date]) = 'August' then 8
+when  DATENAME(month,[date]) = 'September' then 9
+when  DATENAME(month,[date]) = 'October' then 10
+when  DATENAME(month,[date]) = 'November' then 11
+when  DATENAME(month,[date]) = 'December' then 12
+else null end;
