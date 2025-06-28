@@ -230,3 +230,31 @@ when  DATENAME(month,[date]) = 'October' then 10
 when  DATENAME(month,[date]) = 'November' then 11
 when  DATENAME(month,[date]) = 'December' then 12
 else null end;
+
+--To extract Number / Text from given Dataset
+create function extractNumber(@string as nvarchar(max))
+returns nvarchar(max) as
+begin
+declare @indexed int = patindex('%[^0-9]%' , @string);
+while @indexed>0 
+begin
+set @string = STUFF(@string,@indexed,1,'');
+set @indexed= patindex('%[^0-9]%' , @string);
+end;
+return @string;
+end;
+
+create function exceptNumber(@string as nvarchar(max))
+returns nvarchar(max) as
+begin
+declare @indexed int = patindex('%[0-9]%' , @string);
+while @indexed>0 
+begin
+set @string = STUFF(@string,@indexed,1,'');
+set @indexed= patindex('%[0-9]%' , @string);
+end;
+return @string;
+end;
+select dbo.extractNumber('ff123g#@g') as [Number], dbo.exceptNumber('ff123g#@g') as [String];
+select dbo.extractNumber(CONCAT(Email,ID,gender,Salary)) as [Number] ,
+dbo.exceptNumber(CONCAT(Email,ID,gender,Salary)) as [Number] from WholeData;
