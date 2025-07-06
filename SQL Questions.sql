@@ -258,3 +258,17 @@ end;
 select dbo.extractNumber('ff123g#@g') as [Number], dbo.exceptNumber('ff123g#@g') as [String];
 select dbo.extractNumber(CONCAT(Email,ID,gender,Salary)) as [Number] ,
 dbo.exceptNumber(CONCAT(Email,ID,gender,Salary)) as [Number] from WholeData;
+--OR
+create procedure spExtractionNumber 
+@string nvarchar(100) as
+begin
+declare @indexed int =patindex('%[^0-9]%', @string);
+while @indexed>0 
+begin
+set @string = stuff(@string, @indexed,1,'');
+set @indexed =patindex('%[^0-9]%', @string);
+end
+select @string as [Number];
+end;
+
+Execute spExtractionNumber @string = 'a12@b3c4d!';
